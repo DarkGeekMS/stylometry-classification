@@ -11,7 +11,7 @@ A machine learning project for classifying authors based on their writings.
     -   Stemming / Lemmatization (normalizing tokens).
 
 -   Feature Extraction : 
-    -   Classical : (bag of words / n-grams / TF-IDF) / t-SNE / PCA.
+    -   Classical : bag of words / n-grams / TF-IDF.
     -   Deep Learning : word embeddings.
 
 -   Classification (better approach to train a binary classifier for each author to improve generalization):
