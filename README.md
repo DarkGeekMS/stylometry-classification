@@ -6,10 +6,14 @@ A machine learning project for classifying authors based on their writings.
 
 -   Data Collection : https://www.kaggle.com/c/spooky-author-identification
 
+-   Text Processing :
+    -   Tokenization (converting into words or tokens).
+    -   Stemming / Lemmatization (normalizing tokens).
+
 -   Feature Extraction : 
-    -   Classical : n-grams / bag of words / PCA.
+    -   Classical : (bag of words / n-grams / TF-IDF) / t-SNE / PCA.
     -   Deep Learning : word embeddings.
 
 -   Classification (better approach to train a binary classifier for each author to improve generalization):
-    -   Classical : Clustering / SVM / Naive Bayes / SGD / Boosted Decision Trees.
+    -   Classical : Clustering / SVM / Naive Bayes / SGD / Boosted Decision Trees / Linear Regression.
     -   Deep Learning : RNNs / FC.
