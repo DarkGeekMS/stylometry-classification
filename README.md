@@ -15,5 +15,5 @@ A machine learning project for classifying authors based on their writings.
     -   Deep Learning : word embeddings.
 
 -   Classification (better approach to train a binary classifier for each author to improve generalization):
-    -   Classical : Clustering / SVM / Naive Bayes / SGD / Boosted Decision Trees / Linear Regression.
-    -   Deep Learning : RNNs / FC.
+    -   Classical : Linear Regression / Naive Bayes / SVM / XGBoost.
+    -   Deep Learning : RNNs.
