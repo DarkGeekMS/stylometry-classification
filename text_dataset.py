@@ -21,11 +21,11 @@ class TextDataset:
     def read_corpus(self, txt_list):
         sents = dict()
         for txt_file in txt_list:
-            sents[txt_file[:3]] = list()
+            sents[txt_file[-13:-10]] = list()
             with open(txt_file) as f:
                 for line in f:
                     line = line.strip()
-                    sents[txt_file[:3]].append(line)
+                    sents[txt_file[-13:-10]].append(line)
         return sents
 
     def process_text(self, text_corpus):
@@ -36,8 +36,10 @@ class TextDataset:
             processed_list = list()
             for sent in text_corpus[key]:
                 tokens = word_tokenize(sent)
-                if self.norm:
-                    tokens = [text_normalizer(word) for word in tokens]
+                if self.norm == 'stem':
+                    tokens = [text_normalizer.stem(word) for word in tokens]
+                elif self.norm == 'lemma':
+                    tokens = [text_normalizer.lemmatize(word) for word in tokens]
                 processed_list.append(tokens)
             processed_corpus[key] = processed_list
         return processed_corpus
@@ -101,10 +103,11 @@ class TextDataset:
 
     def build_dataset(self):
         text_corpus = self.read_corpus(self.txt_list)
-        text_corpus = self.process_text(text_corpus)
+        if self.vectorizer == 'embed':
+            text_corpus = self.process_text(text_corpus)
         vectorized_corpus = self.vectorize_text(text_corpus)
         label_encoder = preprocessing.LabelEncoder()
-        classes = vectorized_corpus.keys()
+        classes = list(vectorized_corpus.keys())
         labels = label_encoder.fit_transform(classes)
         X, Y = list(), list()
         for key, label in zip(classes, labels):
