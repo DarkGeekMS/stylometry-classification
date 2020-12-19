@@ -19,12 +19,16 @@ class StylometryLC:
         if self.truncated:
             self.svd.fit(x)
             x_truncated = self.svd.transform(x)
-        self.clf.fit(x_truncated, y)
+            self.clf.fit(x_truncated, y)
+        else:
+            self.clf.fit(x, y)
 
     def predict(self, x):
         if self.truncated:
             x_truncated = self.svd.transform(x)
-        outputs = self.clf.predict(x_truncated)
+            outputs = self.clf.predict(x_truncated)
+        else:
+            outputs = self.clf.predict(x)
         return outputs
 
 class StylometryNN(torch.nn.Module):

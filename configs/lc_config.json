@@ -1,0 +1,6 @@
+{
+    "txt_list" : ["data/EAP_train.txt", "data/MWS_train.txt"],
+    "norm" : null,
+    "vectorizer" : "tfidf",
+    "truncation" : null
+}
