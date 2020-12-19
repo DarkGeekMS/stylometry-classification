@@ -8,7 +8,7 @@ import numpy as np
  
 class StylometryLC:
     def __init__(self, truncation=None):
-        self.clf = LogisticRegression(C=1.0)
+        self.clf = MultinomialNB(alpha=1.0)
         if truncation:
             self.truncated = True
             self.svd = TruncatedSVD(n_components=truncation)
