@@ -1,0 +1,14 @@
+{
+    "txt_list" : ["data/EAP_train.txt", "data/MWS_train.txt"],
+    "w2v_path" : "w2v_models/glove.840B.300d.txt",
+    "norm" : null,
+    "vectorizer" : "embed",
+    "emb_dim" : 300,
+    "rnn_hid_dim" : 512,
+    "dense_hid_dim_1" : 1024,
+    "dense_hid_dim_2" : 512,
+    "initial_lr" : 0.001,
+    "weight_decay" : 0,
+    "num_epochs" : 50,
+    "batch_size" : 16
+}
