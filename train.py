@@ -29,6 +29,7 @@ def nn_train(config):
     optimizer = Adam(model.parameters(), lr=config['initial_lr'], weight_decay=config['weight_decay'])
     train_steps = int(len(xtrain) / config['batch_size'])
     valid_steps = int(len(xvalid) / config['batch_size'])
+    best_accuracy = 0.5
     for epoch in range(config['num_epochs']):
         total_loss = 0.0
         for step in tqdm(range(train_steps)):
@@ -45,19 +46,26 @@ def nn_train(config):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-        print('Epoch [{}/{}], Total Epoch Loss: total loss: {:.4f}'.format(epoch + 1, config['num_epochs'], total_loss/train_steps))
-    model.eval()
-    predictions = list()
-    for step in tqdm(range(valid_steps)):
-        x_batch = xvalid[step*config['batch_size']:(step+1)*config['batch_size']]
-        x_batch = np.stack(x_batch, axis=0)
-        x_batch = torch.from_numpy(x_batch).float().to(device)
-        y_out = model(x_batch)
-        y_out = y_out.to('cpu')
-        predictions.append(y_out)
-    predictions = np.concatenate(predictions, axis=0)
-    print (f'accuracy: {accuracy_score(yvalid, predictions)*100}%')
-    print (f'logloss: {log_loss(yvalid, predictions)}')
+        print(f'Epoch [{int(epoch + 1)}/{int(config["num_epochs"])}], Total Epoch Loss: {total_loss/train_steps}')
+        model.eval()
+        accuracies = list()
+        losses = list()
+        for step in tqdm(range(valid_steps)):
+            x_batch = xvalid[step*config['batch_size']:(step+1)*config['batch_size']]
+            x_batch = np.stack(x_batch, axis=0)
+            x_batch = torch.from_numpy(x_batch).float().to(device)
+            y_batch = yvalid[step*config['batch_size']:(step+1)*config['batch_size']]
+            y_batch = np.stack(y_batch, axis=0)
+            y_out = model(x_batch)
+            y_out = torch.squeeze(y_out, dim=1).cpu().detach().numpy()
+            y_out = y_out > 0.5
+            accuracies.append(accuracy_score(y_batch, y_out))
+            losses.append(log_loss(y_batch, y_out))
+        print (f'Validation accuracy: {(sum(accuracies)/len(accuracies))*100}%')
+        print (f'Validation logloss: {sum(losses)/len(losses)}')
+        if sum(accuracies)/len(accuracies) > best_accuracy:
+            torch.save(model.state_dict(), 'models/best_model.pth')
+        model.train()
 
 def lc_train(config):
     dataset = TextDataset(config['txt_list'], norm=config['norm'], vectorizer=config['vectorizer'])

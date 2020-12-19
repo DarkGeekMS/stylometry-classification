@@ -34,7 +34,7 @@ class StylometryLC:
 class StylometryNN(torch.nn.Module):
     def __init__(self, config):
         super(StylometryNN,self).__init__()
-        self.lstm = torch.nn.LSTM(config["emb_dim"], config["rnn_hid_dim"], num_layers=2, batch_first=True, dropout=0.3, bidirectional=True)
+        self.lstm = torch.nn.LSTM(config["emb_dim"], config["rnn_hid_dim"], num_layers=1, batch_first=True, dropout=0.3, bidirectional=True)
         self.linear_first = torch.nn.Linear(config["rnn_hid_dim"]*2, config["dense_hid_dim_1"])
         self.dropout_first = torch.nn.Dropout(p=0.8)
         self.linear_second = torch.nn.Linear(config["dense_hid_dim_1"], config["dense_hid_dim_2"])
