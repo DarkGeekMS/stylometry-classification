@@ -64,7 +64,7 @@ def nn_train(config):
         print (f'Validation accuracy: {(sum(accuracies)/len(accuracies))*100}%')
         print (f'Validation logloss: {sum(losses)/len(losses)}')
         if sum(accuracies)/len(accuracies) > best_accuracy:
-            torch.save(model.state_dict(), 'models/deep_model.pth')
+            torch.save(model, 'models/deep_model.pt')
         model.train()
 
 def lc_train(config):

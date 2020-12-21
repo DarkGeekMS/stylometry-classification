@@ -112,12 +112,16 @@ class TextDataset:
                 vectorized_xvalid.append(sent_embed)
         return vectorized_xtrain, vectorized_xvalid
 
-    def build_dataset(self):
+    def build_dataset(self, eval=False):
         text_corpus = self.read_corpus(self.txt_list)
         if self.vectorizer == 'embed':
             text_corpus = self.process_text(text_corpus)
         X, Y = self.list_data(text_corpus)
-        xtrain, xvalid, ytrain, yvalid = train_test_split(X, Y, stratify=Y, random_state=42, 
-                                                        test_size=0.1, shuffle=True)
-        xtrain, xvalid = self.vectorize_text(xtrain, xvalid)
-        return xtrain, xvalid, ytrain, yvalid
+        if not eval:
+            xtrain, xvalid, ytrain, yvalid = train_test_split(X, Y, stratify=Y, random_state=42,
+                                                            test_size=0.1, shuffle=True)
+            xtrain, xvalid = self.vectorize_text(xtrain, xvalid)
+            return xtrain, xvalid, ytrain, yvalid
+        else:
+            X, _ = self.vectorize_text(X, list())
+            return X, None, Y, None
