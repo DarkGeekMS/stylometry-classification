@@ -9,6 +9,7 @@ from sklearn.metrics import log_loss, accuracy_score
 import numpy as np
 import argparse
 from tqdm import tqdm
+import pickle
 import json
 import sys
 
@@ -63,7 +64,7 @@ def nn_train(config):
         print (f'Validation accuracy: {(sum(accuracies)/len(accuracies))*100}%')
         print (f'Validation logloss: {sum(losses)/len(losses)}')
         if sum(accuracies)/len(accuracies) > best_accuracy:
-            torch.save(model.state_dict(), 'models/best_model.pth')
+            torch.save(model.state_dict(), 'models/deep_model.pth')
         model.train()
 
 def lc_train(config):
@@ -72,6 +73,7 @@ def lc_train(config):
     model = StylometryLC(truncation=config['truncation'])
     model.fit(xtrain, ytrain)
     predictions = model.predict(xvalid)
+    pickle.dump(model, open('models/nb_model.sav', 'wb'))
     print (f'accuracy: {accuracy_score(yvalid, predictions)*100}%')
     print (f'logloss: {log_loss(yvalid, predictions)}')
 
