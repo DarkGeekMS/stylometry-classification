@@ -19,8 +19,7 @@ def nn_train(config):
     network_config = {
         'emb_dim'         : config['emb_dim'],
         'rnn_hid_dim'     : config['rnn_hid_dim'],
-        'dense_hid_dim_1' : config['dense_hid_dim_1'],
-        'dense_hid_dim_2' : config['dense_hid_dim_2']
+        'dense_hid_dim' : config['dense_hid_dim'],
     }
     model = StylometryNN(network_config)
     model.to(device)

@@ -34,22 +34,18 @@ class StylometryLC:
 class StylometryNN(torch.nn.Module):
     def __init__(self, config):
         super(StylometryNN,self).__init__()
-        self.lstm = torch.nn.LSTM(config["emb_dim"], config["rnn_hid_dim"], num_layers=1, batch_first=True, dropout=0.3, bidirectional=True)
-        self.linear_first = torch.nn.Linear(config["rnn_hid_dim"]*2, config["dense_hid_dim_1"])
-        self.dropout_first = torch.nn.Dropout(p=0.8)
-        self.linear_second = torch.nn.Linear(config["dense_hid_dim_1"], config["dense_hid_dim_2"])
-        self.dropout_second = torch.nn.Dropout(p=0.8)
-        self.linear_third = torch.nn.Linear(config["dense_hid_dim_2"], 1)
+        self.gru = torch.nn.GRU(config["emb_dim"], config["rnn_hid_dim"], num_layers=1, batch_first=True, bidirectional=True)
+        self.linear_first = torch.nn.Linear(config["rnn_hid_dim"]*2, config["dense_hid_dim"])
+        self.linear_second = torch.nn.Linear(config["dense_hid_dim"], 1)
+        self.dropout = torch.nn.Dropout(p=0.1)
         self.relu = torch.nn.ReLU()
         self.sigmoid = torch.nn.Sigmoid()
     
     def forward(self, x):
-        outputs, _ = self.lstm(x)
-        outputs = outputs.permute(1, 0, 2)
-        outputs = self.relu(self.linear_first(outputs[-1]))
-        outputs = self.dropout_first(outputs)
-        outputs = self.relu(self.linear_second(outputs))
-        outputs = self.dropout_second(outputs)
-        outputs = self.relu(self.linear_third(outputs))
+        _, outputs = self.gru(x)
+        outputs = outputs.transpose(0, 1).contiguous().view(x.shape[0], -1) 
+        outputs = self.dropout(outputs)
+        outputs = self.relu(self.linear_first(outputs))
+        outputs = self.linear_second(outputs)
         outputs = self.sigmoid(outputs)
         return outputs
