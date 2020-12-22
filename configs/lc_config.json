@@ -1,6 +1,6 @@
 {
     "txt_list" : ["data/HPL_train.txt", "data/MWS_train.txt"],
     "norm" : null,
-    "vectorizer" : "tfidf",
+    "vectorizer" : "count",
     "truncation" : null
 }
