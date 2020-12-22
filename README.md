@@ -34,6 +34,8 @@ The dataset contains the writings of three authors :
 
 -   For training linear classifier model :
 
+    -   Create `models` folder.
+
     -   Edit `configs/lc_config.json`.
 
     -   Run `train.py` :
@@ -43,9 +45,23 @@ The dataset contains the writings of three authors :
 
 -   For training neural network model :
 
+    -   Create `models` and `w2v_models` folders.
+
+    -   Download [GloVe](https://nlp.stanford.edu/projects/glove/) embeddings and extract it into `w2v_models` folder.
+
     -   Edit `configs/nn_config.json`.
     
     -   Run `train.py` :
         ```bash
         python train.py train-nn
         ```
+
+-   For inference on linear classifier model :
+    ```bash
+    python evaluate.py eval-lc --author1 /path/to/author1/text --author2 /path/to/author2/text --model /path/to/model/file
+    ```
+
+-   For inference on neural network model :
+    ```bash
+    python evaluate.py eval-nn --author1 /path/to/author1/text --author2 /path/to/author2/text --model /path/to/model/file --w2v_path /path/to/w2v/model
+    ```
