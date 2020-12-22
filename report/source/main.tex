@@ -25,6 +25,9 @@
 %\usepackage{amssymb}  % assumes amsmath package installed
 \usepackage{graphicx}
 \usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\newcommand{\link}[1]{{\color{blue}\href{#1}{#1}}}
 
 \title{\LARGE \bf
 Natural Language Processing and Machine Learning for Stylometry\\
@@ -44,13 +47,17 @@ Natural Language Processing and Machine Learning for Stylometry\\
 \pagestyle{empty}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{abstract}
 Stylometry is the application of the study of linguistic style, usually to written language. In this work, we discuss the proper methods of using \emph{natural language processing} and \emph{machine learning} for binary classification of authors' writings.
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{INTRODUCTION}
-The report contains the discussion of stylometry problem. We discuss the means of dataset collection, feature extraction and language modeling. Moreover, we mention the advantage of the submitted solutions over the other possible approaches. Finally, we review the code structure  and usage. The provided code mainly contains two solutions. \textbf{First,} \emph{Naive Bayes} classifier with \emph{TF-IDF} features. \textbf{Second,} a simple \emph{neural network} with \emph{word embeddings}.
+The report contains the discussion of stylometry problem. We discuss the means of dataset collection, feature extraction and language modeling. Moreover, we mention the advantage of the submitted solutions over the other possible approaches. Finally, we review the code structure  and usage. The provided code mainly contains two solutions. \textbf{First,} \emph{Naive Bayes} classifier with \emph{n-grams} features. \textbf{Second,} a simple \emph{neural network} with \emph{word embeddings}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{APPROACH}
 This section contains the discussion of \emph{dataset collection}, \emph{feature extraction} and \emph{language modeling}.
@@ -68,7 +75,7 @@ Before feature extraction stage, some text processing is performed on the input 
 For feature extraction, five methods are considered :
 \begin{itemize}
     \item \textbf{Bag of Words} \emph{(BoW)} : yields the worst performance.
-    \item \textbf{n-grams} : offers moderate performance based on the classifier.
+    \item \textbf{n-grams} : offers moderate to decent performance based on the classifier.
     \item \textbf{TF-IDF vectorization} : \emph{n-grams} $+$ \emph{term frequency - inverse document frequency}, offers decent performance with most classifiers.
     \item \textbf{PCA / Truncated SVD on previous features} : using \emph{principal component analysis} or \emph{truncated singular value decomposition} on our features does not seem to perform well.
     \item \textbf{Word Embeddings} : basically using \emph{GloVe} pretrained embeddings for \emph{neural networks} training.
@@ -77,31 +84,109 @@ For feature extraction, five methods are considered :
 \subsection{Language Modeling}
 The submitted solution only offers two methods \emph{Naive Bayes} classifier as a classical language model and a \emph{deep neural network} as a deep learning language model.
 \begin{itemize}
-    \item \textbf{Classical language modeling :} \textbf{Naive Bayes} is used with \emph{TF-IDF} vectorization features. This is basically because it yields better results than all the other considered classical approaches. The other classical approaches, considered in this work, are \textbf{support vector machines} \emph{(SVM)}, \textbf{logistic regression} and \textbf{gradient boosting}.
+    \item \textbf{Classical language modeling :} \textbf{Naive Bayes} is used with \emph{n-grams} \emph{(count vectorization)} features. This is basically because it yields better results than all the other considered classical approaches. The other classical approaches, considered in this work, are \textbf{support vector machines} \emph{(SVM)}, \textbf{logistic regression} and \textbf{gradient boosting}.
     \item \textbf{Deep learning-based language modeling :} a simple \emph{neural network} is used with \emph{word embeddings}, in order to test the ability of neural networks on our dataset. The network consists of one \textbf{bidirectional GRU} layer followed by two \textbf{fully-connected} layer with \textbf{dropouts}. 
 \end{itemize}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{CODE STRUCTURE}
+\subsection{Code Files}
+The submission contains $4$ main code files :
+\begin{itemize}
+    \item \textbf{text\_dataset.py :} contains the dataset class that contains the code for building and processing the text dataset. \emph{NLTK} and \emph{sklearn} libraries are used in the implementation.
+    \item \textbf{model.py :} contains one class for \emph{Naive Bayes} as linear classifier (\emph{sklearn MultinomialBN} is used) and one class for \emph{the simple neural network} (\emph{PyTorch} is used for network implementation).
+    \item \textbf{train.py :} contains the main code for training both \emph{Naive Bayes} and \emph{neural network}.
+    \item \textbf{evaluate.py :} contains the main code for evaluating both \emph{Naive Bayes} and \emph{neural network}.
+\end{itemize}
+
+\subsection{Dataset}
+The folder named \emph{data} has $6$ files for train and test data :
+\begin{itemize}
+    \item \textbf{EAP\_train.txt :} \emph{Edgar Allan Poe} train data.
+    \item \textbf{EAP\_test.txt :} \emph{Edgar Allan Poe} test data.
+    \item \textbf{HPL\_train.txt :} \emph{HP Lovecraft} train data.
+    \item \textbf{HPL\_test.txt :} \emph{HP Lovecraft} test data.
+    \item \textbf{MWS\_train.txt :} \emph{Mary Wollstonecraft Shelley} train data.
+    \item \textbf{MWS\_test.txt :} \emph{Mary Wollstonecraft Shelley} test data.
+\end{itemize}
+
+\subsection{Miscellaneous}
+\begin{itemize}
+    \item \textbf{config} folder : contains \emph{JSON} config files.
+    \item \textbf{models} folder : contains neural network model file \emph{(deep\_model.pt)} and linear classifier model file \emph{(nb\_model.sav)}.
+    \item \textbf{report} folder : contains submission report source and \emph{PDF}.
+    \item \textbf{README.md} : contains code installation and usage.
+    \item \textbf{requirements.txt} : contains required dependencies.
+    \item \textbf{w2v\_models} folder : \emph{[REQUIRED]} needs to be created \emph{(follow code usage details)}.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{CODE USAGE}
+The details, mentioned in this section, are also mentioned in \emph{README.md}
+
+\subsection{Dependencies}
+The following \emph{python} packages and libraries are required for code usage :
+\begin{itemize}
+    \item \emph{pytorch}
+    \item \emph{sklearn}
+    \item \emph{nltk}
+    \item \emph{numpy}
+    \item \emph{tqdm}
+    \item \emph{argparse}
+    \item \emph{pickle}
+\end{itemize}
+
+\subsection{Usage}
+Follow the instructions to run code functionalities :
+\begin{itemize}
+    \item \textbf{For training linear classifier model :}
+    \begin{itemize}
+        \item Create \emph{models} folder.
+        \item Edit \emph{configs/lc\_config.json}.
+        \item Run \emph{train.py} :
+        \begin{itemize}
+            \item \emph{python train.py train-lc}
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{For training neural network model :}
+    \begin{itemize}
+        \item Create \emph{models} and \emph{w2v\_models} folders.
+        \item Download \emph{GloVe} \link{https://nlp.stanford.edu/projects/glove/} embeddings into \emph{w2v\_models} folder.
+        \item Edit \emph{configs/nn\_config.json}.
+        \item Run \emph{train.py} :
+        \begin{itemize}
+            \item \emph{python train.py train-nn}
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{For inference on linear classifier model :}
+    \begin{itemize}
+        \item \emph{python evaluate.py eval-lc --author1 /path/to/author1/text --author2 /path/to/author2/text --model /path/to/model/file}
+    \end{itemize}
+    \item \textbf{For inference on neural network model :}
+    \begin{itemize}
+        \item \emph{python evaluate.py eval-nn --author1 /path/to/author1/text --author2 /path/to/author2/text --model /path/to/model/file --w2v\_path /path/to/w2v/model}
+    \end{itemize}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{EXPERIMENTAL RESULTS}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{CONCLUSION}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 \begin{thebibliography}{99}
-
+\bibitem{c1} Machine Learning Methods for Stylometry Book.
+\bibitem{c2} \emph{Kaggle's} \textbf{Spooky author identification problem} : \link{https://www.kaggle.com/c/spooky-author-identification}
 \end{thebibliography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \end{document}
