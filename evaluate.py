@@ -19,8 +19,7 @@ def nn_train(author1, author2, model, w2v_path):
     model.to(device)
     model.eval()
     valid_steps = int(len(X) / batch_size)
-    accuracies = list()
-    losses = list()
+    predictions = list()
     for step in tqdm(range(valid_steps)):
         x_batch = X[step*batch_size:(step+1)*batch_size]
         x_batch = np.stack(x_batch, axis=0)
@@ -30,10 +29,19 @@ def nn_train(author1, author2, model, w2v_path):
         y_out = model(x_batch)
         y_out = torch.squeeze(y_out, dim=1).cpu().detach().numpy()
         y_out = y_out > 0.5
-        accuracies.append(accuracy_score(y_batch, y_out))
-        losses.append(log_loss(y_batch, y_out))
-    print (f'accuracy: {(sum(accuracies)/len(accuracies))*100}%')
-    print (f'logloss: {sum(losses)/len(losses)}')
+        predictions.append(y_out)
+    x_batch = X[valid_steps*batch_size:]
+    x_batch = np.stack(x_batch, axis=0)
+    x_batch = torch.from_numpy(x_batch).float().to(device)
+    y_batch = Y[valid_steps*batch_size:]
+    y_batch = np.stack(y_batch, axis=0)
+    y_out = model(x_batch)
+    y_out = torch.squeeze(y_out, dim=1).cpu().detach().numpy()
+    y_out = y_out > 0.5
+    predictions.append(y_out)
+    predictions = np.concatenate(predictions, axis=0)
+    print (f'accuracy: {accuracy_score(Y, predictions)*100}%')
+    print (f'logloss: {log_loss(Y, predictions)}')
 
 def lc_train(author1, author2, model):
     dataset = TextDataset([author1, author2], norm=None, vectorizer='tfidf')
