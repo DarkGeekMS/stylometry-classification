@@ -1,0 +1,107 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%2345678901234567890123456789012345678901234567890123456789012345678901234567890
+%        1         2         3         4         5         6         7         8
+
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out
+                                                          % if you need a4paper
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4
+                                                          % paper
+
+\IEEEoverridecommandlockouts                              % This command is only
+                                                          % needed if you want to
+                                                          % use the \thanks command
+\overrideIEEEmargins
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+
+
+% The following packages can be found on http:\\www.ctan.org
+%\usepackage{graphics} % for pdf, bitmapped graphics files
+%\usepackage{epsfig} % for postscript graphics files
+%\usepackage{mathptmx} % assumes new font selection scheme installed
+%\usepackage{times} % assumes new font selection scheme installed
+%\usepackage{amsmath} % assumes amsmath package installed
+%\usepackage{amssymb}  % assumes amsmath package installed
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+\title{\LARGE \bf
+Natural Language Processing and Machine Learning for Stylometry\\
+\texttt{Problem (9)}
+}
+
+\author{
+  Mohamed Shawky Zaky AbdelAal Sabae\\
+  \texttt{Section:2,BN:15}\\
+  \texttt{mohamed.sabae99@eng-st.cu.edu.eg}
+}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+Stylometry is the application of the study of linguistic style, usually to written language. In this work, we discuss the proper methods of using \emph{natural language processing} and \emph{machine learning} for binary classification of authors' writings.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{INTRODUCTION}
+The report contains the discussion of stylometry problem. We discuss the means of dataset collection, feature extraction and language modeling. Moreover, we mention the advantage of the submitted solutions over the other possible approaches. Finally, we review the code structure  and usage. The provided code mainly contains two solutions. \textbf{First,} \emph{Naive Bayes} classifier with \emph{TF-IDF} features. \textbf{Second,} a simple \emph{neural network} with \emph{word embeddings}.
+
+\section{APPROACH}
+This section contains the discussion of \emph{dataset collection}, \emph{feature extraction} and \emph{language modeling}.
+
+\subsection{Dataset Collection}
+Dataset is collected from \emph{Kaggle's} \textbf{Spooky author identification problem}, as it contains authors of the same era and genre. Other authors are not considered mainly because no available data for multiple authors of the same era. The dataset contains three authors :
+\begin{itemize}
+    \item \textbf{Edgar Allan Poe} \emph{(EAP)} : 7900 phrases.
+    \item \textbf{HP Lovecraft} \emph{(HPL)} : 5635 phrases.
+    \item \textbf{Mary Wollstonecraft Shelley} \emph{(MWS)} : 6044 phrases.
+\end{itemize}
+
+\subsection{Feature Extraction}
+Before feature extraction stage, some text processing is performed on the input phrases. Basically, \textbf{tokenization}, \textbf{stemming} and \textbf{lemmatization} are performed. \textbf{stemming} performs better than \textbf{lemmatization} in our case. \\
+For feature extraction, five methods are considered :
+\begin{itemize}
+    \item \textbf{Bag of Words} \emph{(BoW)} : yields the worst performance.
+    \item \textbf{n-grams} : offers moderate performance based on the classifier.
+    \item \textbf{TF-IDF vectorization} : \emph{n-grams} $+$ \emph{term frequency - inverse document frequency}, offers decent performance with most classifiers.
+    \item \textbf{PCA / Truncated SVD on previous features} : using \emph{principal component analysis} or \emph{truncated singular value decomposition} on our features does not seem to perform well.
+    \item \textbf{Word Embeddings} : basically using \emph{GloVe} pretrained embeddings for \emph{neural networks} training.
+\end{itemize}
+
+\subsection{Language Modeling}
+The submitted solution only offers two methods \emph{Naive Bayes} classifier as a classical language model and a \emph{deep neural network} as a deep learning language model.
+\begin{itemize}
+    \item \textbf{Classical language modeling :} \textbf{Naive Bayes} is used with \emph{TF-IDF} vectorization features. This is basically because it yields better results than all the other considered classical approaches. The other classical approaches, considered in this work, are \textbf{support vector machines} \emph{(SVM)}, \textbf{logistic regression} and \textbf{gradient boosting}.
+    \item \textbf{Deep learning-based language modeling :} a simple \emph{neural network} is used with \emph{word embeddings}, in order to test the ability of neural networks on our dataset. The network consists of one \textbf{bidirectional GRU} layer followed by two \textbf{fully-connected} layer with \textbf{dropouts}. 
+\end{itemize}
+
+\section{CODE STRUCTURE}
+
+\section{CODE USAGE}
+
+\section{EXPERIMENTAL RESULTS}
+
+\section{CONCLUSION}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{thebibliography}{99}
+
+\end{thebibliography}
+
+\end{document}
