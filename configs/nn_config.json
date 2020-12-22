@@ -1,5 +1,5 @@
 {
-    "txt_list" : ["data/EAP_train.txt", "data/MWS_train.txt"],
+    "txt_list" : ["data/HPL_train.txt", "data/MWS_train.txt"],
     "w2v_path" : "w2v_models/glove.840B.300d.txt",
     "norm" : null,
     "vectorizer" : "embed",

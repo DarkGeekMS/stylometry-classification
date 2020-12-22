@@ -55,14 +55,14 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description=__doc__)
     subparsers = argparser.add_subparsers(help='Sub-commands', dest='command')
     nn_subparser = subparsers.add_parser('eval-nn', help='Train neural network')
-    nn_subparser.add_argument('--author1', help='path to first author writings', dest='author1', default='data/EAP_train.txt')
-    nn_subparser.add_argument('--author2', help='path to second author writings', dest='author2', default='data/MWS_train.txt')
+    nn_subparser.add_argument('--author1', help='path to first author writings', dest='author1', default='data/HPL_test.txt')
+    nn_subparser.add_argument('--author2', help='path to second author writings', dest='author2', default='data/MWS_test.txt')
     nn_subparser.add_argument('--model', help='path to model file', dest='model', default='models/deep_model.pt')
     nn_subparser.add_argument('--w2v_path', help='path to word2vec file', dest='w2v_path', default='w2v_models/glove.840B.300d.txt')
 
     lc_subparser = subparsers.add_parser('eval-lc', help='Train linear classifier')
-    lc_subparser.add_argument('--author1', help='path to first author writings', dest='author1', default='data/EAP_train.txt')
-    lc_subparser.add_argument('--author2', help='path to second author writings', dest='author2', default='data/MWS_train.txt')
+    lc_subparser.add_argument('--author1', help='path to first author writings', dest='author1', default='data/HPL_test.txt')
+    lc_subparser.add_argument('--author2', help='path to second author writings', dest='author2', default='data/MWS_test.txt')
     lc_subparser.add_argument('--model', help='path to model file', dest='model', default='models/nb_model.sav')
 
     args = argparser.parse_args()
@@ -71,12 +71,12 @@ if __name__ == "__main__":
     author1 = kwargs.pop('author1')
     author2 = kwargs.pop('author2')
     model = kwargs.pop('model')
-    w2v_path = kwargs.pop('w2v_path')
 
     if subcmd is None:
         print ('Error: missing subcommand.  Re-run with --help for usage.')
         sys.exit(1)
     elif subcmd == 'eval-nn':
+        w2v_path = kwargs.pop('w2v_path')
         nn_train(author1, author2, model, w2v_path)
     elif subcmd == 'eval-lc':
         lc_train(author1, author2, model)
