@@ -85,7 +85,7 @@ For feature extraction, five methods are considered :
 The submitted solution only offers two methods \emph{Naive Bayes} classifier as a classical language model and a \emph{deep neural network} as a deep learning language model.
 \begin{itemize}
     \item \textbf{Classical language modeling :} \textbf{Naive Bayes} is used with \emph{n-grams} \emph{(count vectorization)} features. This is basically because it yields better results than all the other considered classical approaches. The other classical approaches, considered in this work, are \textbf{support vector machines} \emph{(SVM)}, \textbf{logistic regression} and \textbf{gradient boosting}.
-    \item \textbf{Deep learning-based language modeling :} a simple \emph{neural network} is used with \emph{word embeddings}, in order to test the ability of neural networks on our dataset. The network consists of one \textbf{bidirectional GRU} layer followed by two \textbf{fully-connected} layer with \textbf{dropouts}. 
+    \item \textbf{Deep learning-based language modeling :} a simple \emph{neural network} is used with \emph{word embeddings}, in order to test the ability of neural networks on our dataset. The network consists of one \textbf{bidirectional GRU} layer followed by two \textbf{fully-connected} layers with \textbf{dropouts}. 
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -153,7 +153,7 @@ Follow the instructions to run code functionalities :
     \item \textbf{For training neural network model :}
     \begin{itemize}
         \item Create \emph{models} and \emph{w2v\_models} folders.
-        \item Download \emph{GloVe} \link{https://nlp.stanford.edu/projects/glove/} embeddings into \emph{w2v\_models} folder.
+        \item Download \emph{GloVe} embeddings into \emph{w2v\_models} folder.
         \item Edit \emph{configs/nn\_config.json}.
         \item Run \emph{train.py} :
         \begin{itemize}
@@ -173,18 +173,108 @@ Follow the instructions to run code functionalities :
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{EXPERIMENTAL RESULTS}
+This section mainly addresses \emph{points} $3$ and $4$ in the requirements, by discussing which \textbf{language model} is better and the results of altering \textbf{features}.
 
+\subsection{Experimental Setup}
+The problem experiments are conducted in the following order :
+\begin{itemize}
+    \item The \textbf{codebase} is developed, in order to try \textbf{all possible combinations} of features and classifiers.
+    \item The \textbf{language models} are evaluated based on \emph{accuracy score} and \emph{binary log loss} using \textbf{only two of the three} authors.
+    \item \textbf{Scores} are recorded and the \textbf{best combination} from both linear classifiers and neural networks are obtained.
+    \item \textbf{Further experimentation} is conducted on the two solutions to see the effect of altering features and model parameters, as well as using different pairs of authors.
+\end{itemize}
+The dataset is divided into $80$\% \textbf{train}, $10$\% \textbf{validation} and $10$\% \textbf{test}. Also, the initial experiments are conducted using \emph{HP Lovecraft} and \emph{Mary Wollstonecraft Shelley} phrases.
+
+\subsection{Classifier Analysis (Language Model)}
+\begin{table}[h!]
+\centering
+\begin{tabular}{||c | c | c | c||} 
+ \hline
+ Model & TF-IDF & n-grams & embeddings \\ [0.5ex] 
+ \hline\hline
+ Logistic Regression & 91.9\% & 88.97\% & --- \\ 
+ \hline
+ Support Vector Machines & 92.5\% & 83.26\% & --- \\
+ \hline
+ Naive Bayes & 92.5\% & 93.15\% & --- \\
+ \hline
+ Gradient Boosting & 79.84\% & 81.17\% & --- \\
+ \hline
+ Neural Networks & --- & --- & 92.7\% \\ [1ex] 
+ \hline
+\end{tabular}
+\caption{Accuracy Scores of different classifiers and features}
+\label{table:1}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{||c | c | c | c||} 
+ \hline
+ Model & TF-IDF & n-grams & embeddings \\ [0.5ex] 
+ \hline\hline
+ Logistic Regression & 2.8 & 3.9 & --- \\ 
+ \hline
+ Support Vector Machines & 2.56 & 5.77 & --- \\
+ \hline
+ Naive Bayes & 2.59 & 2.36 & --- \\
+ \hline
+ Gradient Boosting & 6.96 & 6.5 & --- \\
+ \hline
+ Neural Networks & --- & --- & 2.52 \\ [1ex] 
+ \hline
+\end{tabular}
+\caption{Binary Logloss of different classifiers and features}
+\label{table:2}
+\end{table}
+
+\subsubsection{Linear Classifiers}
+The previous tables \ref{table:1} and \ref{table:2} show the results of using multiple linear classifiers with different features. It's obvious that \textbf{Naive Bayes} with \textbf{n-grams} features is the best combination resulting in $93.15$\% accuracy. On the other hand, \textbf{gradient boosting} results in very poor performance compared to other classifiers. Tuning the parameters of these models doesn't result in any significant performance improvement. Moreover, trying to reproduce the results of \emph{sklearn} and \emph{xgboost} libraries implementation results in \textbf{performance reduction}. For example, re-implementing \textbf{Naive Bayes} reduces its accuracy to about $90$\%, however the implementation is \textbf{submitted}, as well as the usage of \emph{sklearn}.
+
+\subsubsection{neural networks}
+The final network, used in this work, consists of \emph{one} \textbf{bidirectional GRU} and \emph{two} \textbf{fully-connected} layers with \textbf{dropouts}. The network is used with \emph{GloVe} word embeddings, resulting in $92.7$\% accuracy. The model's performance is worse than \emph{Naive Bayes}, however it is submitted as a \emph{Deep Learning} baseline. Due to the \emph{dataset structure}, the network suffers from \emph{overfitting}, which is reduced by \emph{reducing the number of network layers} and \emph{using dropouts between fully-connected layers}.
+
+\subsection{Features Analysis}
+As mentioned before, we considered \emph{n-grams} and \emph{TF-IDF} as classical features and \emph{GloVe} word embedding model as deep learning features. So, let's discuss three main points regarding used features :
+\begin{itemize}
+    \item \emph{TF-IDF} vectorization performs better than simple count \emph{n-grams} for most classifiers, however simple count \emph{n-grams} yield the best performance with \emph{Naive Bayes} classifier, that's why it's chosen. \emph{GloVe} word embedding model is specified for the neural network, though.
+    \item Using \emph{1-grams} \emph{(single words)} yields very poor results. However, excessively increasing the number of \emph{n-grams} results in overfitting. Consequently, using up to \emph{2-grams} or \emph{3-grams} results in the best performance \emph{(around 93.2\% accuracy)}.
+    \item \textbf{Principal components analysis} \emph{(PCA)} is considered to extract important components from features. However, since the features are \emph{huge} and \emph{sparse}, it's better to use \textbf{singular value decomposition} \emph{(SVD)} truncation, which is the same as \emph{PCA} but on non-zero centred data. Unfortunately, as the number of features components decrease, the accuracy decreases as well.
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{CONCLUSION}
+\section{RESULTS AND CONCLUSION}
+\begin{table}[h!]
+\centering
+\begin{tabular}{||c | c | c ||} 
+ \hline
+ Authors & Naive Bayes & Neural Network \\ [0.5ex] 
+ \hline\hline
+ HPL / MWS & 93.15\% & 92.7\% \\ 
+ \hline
+ EAP / HPL & 90\% & 91.6\% \\
+ \hline
+ EAP / MWS & 87.8\% & 92\% \\
+ \hline
+\end{tabular}
+\caption{Accuracy of Naive Bayes and Neural Network classifier on all authors pairs}
+\label{table:3}
+\end{table}
 
+Table \ref{table:3} shows the results of the two chosen models on validation/test data of different authors pairs. It's obvious that different pairs results in different accuracy. This is basically because the some authors might have \textbf{close style} to each other. We can, also, see that the two models are close to each other, however some model can be better than the other based on the authors pair. \emph{Neural networks} don't perform much better than linear classifiers for this dataset. This can be due to the following reasons :
+\begin{itemize}
+    \item Not all the vocabulary set of the provided phrases exists in the \emph{GloVe} word embedding model, which can significantly affect the performance.
+    \item The model overfits rapidly on the training data.
+    \item Advanced \emph{attention} mechanisms can be used for improving performance.
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{thebibliography}{99}
 \bibitem{c1} Machine Learning Methods for Stylometry Book.
 \bibitem{c2} \emph{Kaggle's} \textbf{Spooky author identification problem} : \link{https://www.kaggle.com/c/spooky-author-identification}
+\bibitem{c3} \emph{GloVe} word embedding model : \link{https://nlp.stanford.edu/projects/glove/}
 \end{thebibliography}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
