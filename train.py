@@ -85,6 +85,7 @@ def nn_train(config):
         # save model (based on best validation accuracy)
         if sum(accuracies)/len(accuracies) > best_accuracy:
             torch.save(model, 'models/deep_model.pt')
+            best_accuracy = sum(accuracies)/len(accuracies)
         model.train()
 
 def lc_train(config):

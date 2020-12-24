@@ -5,7 +5,7 @@ NOTE: This implementation is inspired by some open source implementations of Nai
 import math
 from collections import defaultdict
 
-class CustomMultinomialNB():
+class CustomMultinomialNB:
     """
     Custom Implementation of Naive Bayes classifier
     """
