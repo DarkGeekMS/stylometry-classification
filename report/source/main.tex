@@ -65,9 +65,9 @@ This section contains the discussion of \emph{dataset collection}, \emph{feature
 \subsection{Dataset Collection}
 Dataset is collected from \emph{Kaggle's} \textbf{Spooky author identification problem}, as it contains authors of the same era and genre. Other authors are not considered mainly because no available data for multiple authors of the same era. The dataset contains three authors :
 \begin{itemize}
-    \item \textbf{Edgar Allan Poe} \emph{(EAP)} : 7900 phrases.
-    \item \textbf{HP Lovecraft} \emph{(HPL)} : 5635 phrases.
-    \item \textbf{Mary Wollstonecraft Shelley} \emph{(MWS)} : 6044 phrases.
+    \item \textbf{Edgar Allan Poe} \emph{(EAP)} : $7900$ phrases.
+    \item \textbf{HP Lovecraft} \emph{(HPL)} : $5635$ phrases.
+    \item \textbf{Mary Wollstonecraft Shelley} \emph{(MWS)} : $6044$ phrases.
 \end{itemize}
 
 \subsection{Feature Extraction}
@@ -92,12 +92,13 @@ The submitted solution only offers two methods \emph{Naive Bayes} classifier as 
 
 \section{CODE STRUCTURE}
 \subsection{Code Files}
-The submission contains $4$ main code files :
+The submission contains $5$ main code files :
 \begin{itemize}
     \item \textbf{text\_dataset.py :} contains the dataset class that contains the code for building and processing the text dataset. \emph{NLTK} and \emph{sklearn} libraries are used in the implementation.
     \item \textbf{model.py :} contains one class for \emph{Naive Bayes} as linear classifier (\emph{sklearn MultinomialBN} is used) and one class for \emph{the simple neural network} (\emph{PyTorch} is used for network implementation).
-    \item \textbf{train.py :} contains the main code for training both \emph{Naive Bayes} and \emph{neural network}.
-    \item \textbf{evaluate.py :} contains the main code for evaluating both \emph{Naive Bayes} and \emph{neural network}.
+    \item \textbf{train.py :} contains the main code for training both \emph{Naive Bayes} and \emph{neural network} and uses both \emph{text\_dataset.py} and \emph{model.py}.
+    \item \textbf{evaluate.py :} contains the main code for evaluating both \emph{Naive Bayes} and \emph{neural network} and uses both \emph{text\_dataset.py} and \emph{model.py}.
+    \item \textbf{naive\_bayes.py :} contains a custom implementation of \emph{Naive Bayes} classifier. However, it's not used in the main code, because it yields lower performance than \emph{sklearn MultinomialBN}.
 \end{itemize}
 
 \subsection{Dataset}
@@ -179,7 +180,7 @@ This section mainly addresses \emph{points} $3$ and $4$ in the requirements, by 
 The problem experiments are conducted in the following order :
 \begin{itemize}
     \item The \textbf{codebase} is developed, in order to try \textbf{all possible combinations} of features and classifiers.
-    \item The \textbf{language models} are evaluated based on \emph{accuracy score} and \emph{binary log loss} using \textbf{only two of the three} authors.
+    \item The \textbf{language models} are evaluated based on \emph{accuracy score} and \emph{binary logloss} using \textbf{only two of the three} authors.
     \item \textbf{Scores} are recorded and the \textbf{best combination} from both linear classifiers and neural networks are obtained.
     \item \textbf{Further experimentation} is conducted on the two solutions to see the effect of altering features and model parameters, as well as using different pairs of authors.
 \end{itemize}
@@ -229,13 +230,13 @@ The dataset is divided into $80$\% \textbf{train}, $10$\% \textbf{validation} an
 \end{table}
 
 \subsubsection{Linear Classifiers}
-The previous tables \ref{table:1} and \ref{table:2} show the results of using multiple linear classifiers with different features. It's obvious that \textbf{Naive Bayes} with \textbf{n-grams} features is the best combination resulting in $93.15$\% accuracy. On the other hand, \textbf{gradient boosting} results in very poor performance compared to other classifiers. Tuning the parameters of these models doesn't result in any significant performance improvement. Moreover, trying to reproduce the results of \emph{sklearn} and \emph{xgboost} libraries implementation results in \textbf{performance reduction}. For example, re-implementing \textbf{Naive Bayes} reduces its accuracy to about $90$\%, however the implementation is \textbf{submitted}, as well as the usage of \emph{sklearn}.
+The previous tables \ref{table:1} and \ref{table:2} show the results of using multiple linear classifiers with different features. It's obvious that \textbf{Naive Bayes} with \textbf{n-grams} features is the best combination resulting in $93.15$\% accuracy. On the other hand, \textbf{gradient boosting} results in very poor performance compared to other classifiers. Tuning the parameters of these models doesn't result in any significant performance improvement. Moreover, trying to reproduce the results of \emph{sklearn} and \emph{xgboost} libraries implementation results in \textbf{performance reduction}. For example, re-implementing \textbf{Naive Bayes} highly reduces its accuracy, however the implementation is \textbf{submitted}, as well as the usage of \emph{sklearn}.
 
 \subsubsection{neural networks}
-The final network, used in this work, consists of \emph{one} \textbf{bidirectional GRU} and \emph{two} \textbf{fully-connected} layers with \textbf{dropouts}. The network is used with \emph{GloVe} word embeddings, resulting in $92.7$\% accuracy. The model's performance is worse than \emph{Naive Bayes}, however it is submitted as a \emph{Deep Learning} baseline. Due to the \emph{dataset structure}, the network suffers from \emph{overfitting}, which is reduced by \emph{reducing the number of network layers} and \emph{using dropouts between fully-connected layers}.
+The final network, used in this work, consists of \emph{one} \textbf{bidirectional GRU} and \emph{two} \textbf{fully-connected} layers with \textbf{dropouts}. The network is used with \emph{GloVe} word embeddings, resulting in $92.7$\% accuracy. The model's performance is worse than \emph{Naive Bayes} on this pair of authors, however it is submitted as a \emph{Deep Learning} baseline. Due to the \emph{dataset structure}, the network suffers from \emph{overfitting}, which is reduced by \emph{reducing the number of network layers} and \emph{using dropouts between fully-connected layers}.
 
 \subsection{Features Analysis}
-As mentioned before, we considered \emph{n-grams} and \emph{TF-IDF} as classical features and \emph{GloVe} word embedding model as deep learning features. So, let's discuss three main points regarding used features :
+As mentioned before, we considered \emph{n-grams} and \emph{TF-IDF} as classical features and \emph{GloVe} word embedding model as deep learning features. So, let's discuss three main points regarding the used features :
 \begin{itemize}
     \item \emph{TF-IDF} vectorization performs better than simple count \emph{n-grams} for most classifiers, however simple count \emph{n-grams} yield the best performance with \emph{Naive Bayes} classifier, that's why it's chosen. \emph{GloVe} word embedding model is specified for the neural network, though.
     \item Using \emph{1-grams} \emph{(single words)} yields very poor results. However, excessively increasing the number of \emph{n-grams} results in overfitting. Consequently, using up to \emph{2-grams} or \emph{3-grams} results in the best performance \emph{(around 93.2\% accuracy)}.
@@ -262,10 +263,11 @@ As mentioned before, we considered \emph{n-grams} and \emph{TF-IDF} as classical
 \label{table:3}
 \end{table}
 
-Table \ref{table:3} shows the results of the two chosen models on validation/test data of different authors pairs. It's obvious that different pairs results in different accuracy. This is basically because the some authors might have \textbf{close style} to each other. We can, also, see that the two models are close to each other, however some model can be better than the other based on the authors pair. \emph{Neural networks} don't perform much better than linear classifiers for this dataset. This can be due to the following reasons :
+Table \ref{table:3} shows the results of the two chosen models on validation/test data of different authors pairs. It's obvious that different pairs result in different accuracy. This is basically because the some authors might have \textbf{close style} to each other. We can, also, see that the two models are close to each other, however one model can be better than the other based on the authors pair. \emph{Neural networks} don't perform much better than linear classifiers for this dataset. This can be due to the following reasons :
 \begin{itemize}
     \item Not all the vocabulary set of the provided phrases exists in the \emph{GloVe} word embedding model, which can significantly affect the performance.
     \item The model overfits rapidly on the training data.
+    \item The number of training samples isn't enough to train the network properly.
     \item Advanced \emph{attention} mechanisms can be used for improving performance.
 \end{itemize}
 
