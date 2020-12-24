@@ -73,6 +73,7 @@ class StylometryNN(torch.nn.Module):
         outputs = outputs.transpose(0, 1).contiguous().view(x.shape[0], -1) 
         outputs = self.dropout(outputs)
         outputs = self.relu(self.linear_first(outputs))
+        outputs = self.dropout(outputs)
         outputs = self.linear_second(outputs)
         outputs = self.sigmoid(outputs)
         return outputs

@@ -113,9 +113,10 @@ class TextDataset:
         vectorized_xvalid = list()
         # TF-IDF vectorizer (n-grams + TF-IDF)
         if self.vectorizer == 'tfidf':
-            tfidf_vec = TfidfVectorizer(min_df=3, max_features=None, strip_accents='unicode', 
-                                    analyzer='word', token_pattern=r'\w{1,}', ngram_range=(1, 3),
-                                    use_idf=True, smooth_idf=True, sublinear_tf=True, stop_words = 'english')
+            tfidf_vec = TfidfVectorizer(min_df=3, strip_accents='unicode', analyzer='word',
+                                    token_pattern=r'\w{1,}', ngram_range=(1, 3),
+                                    use_idf=True, smooth_idf=True, sublinear_tf=True,
+                                    stop_words = 'english')
             tfidf_vec.fit(list(xtrain) + list(xvalid))
             vectorized_xtrain = tfidf_vec.transform(xtrain)
             vectorized_xvalid = tfidf_vec.transform(xvalid)
