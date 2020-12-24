@@ -2,6 +2,7 @@ from text_dataset import TextDataset
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from sklearn.metrics import log_loss, accuracy_score
 
 import numpy as np
@@ -37,7 +38,6 @@ def nn_train(author1, author2, model, w2v_path):
         y_out = model(x_batch)
         y_out = torch.squeeze(y_out, dim=1).cpu().detach().numpy()
         # save predictions
-        y_out = y_out > 0.5
         predictions.append(y_out)
     # perform inference on the remaining samples
     x_batch = X[valid_steps*batch_size:]
@@ -47,13 +47,13 @@ def nn_train(author1, author2, model, w2v_path):
     y_batch = np.stack(y_batch, axis=0)
     y_out = model(x_batch)
     y_out = torch.squeeze(y_out, dim=1).cpu().detach().numpy()
-    y_out = y_out > 0.5
     predictions.append(y_out)
     # concatenate all predictions
-    predictions = np.concatenate(predictions, axis=0)
+    predictions_proba = np.concatenate(predictions, axis=0)
+    predictions = predictions_proba > 0.5
     # print results
     print (f'accuracy: {accuracy_score(Y, predictions)*100}%')
-    print (f'logloss: {log_loss(Y, predictions)}')
+    print (f'logloss: {F.binary_cross_entropy(torch.from_numpy(predictions_proba).float(), torch.from_numpy(np.array(Y)).float())}')
 
 def lc_train(author1, author2, model):
     # evaluate linear classifier model
@@ -64,9 +64,10 @@ def lc_train(author1, author2, model):
     model = pickle.load(open(model, 'rb'))
     # predict dataset labels
     predictions = model.predict(X)
+    predictions_proba = model.predict_proba(X)
     # print results
     print (f'accuracy: {accuracy_score(Y, predictions)*100}%')
-    print (f'logloss: {log_loss(Y, predictions)}')
+    print (f'logloss: {log_loss(Y, predictions_proba)}')
 
 if __name__ == "__main__":
     # argument parsing

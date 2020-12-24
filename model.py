@@ -35,12 +35,21 @@ class StylometryLC:
             self.clf.fit(x, y)
 
     def predict(self, x):
-        # predict class (probability) of x given naive bayes
+        # predict class (label) of x given naive bayes
         if self.truncated:
             x_truncated = self.svd.transform(x)
             outputs = self.clf.predict(x_truncated)
         else:
             outputs = self.clf.predict(x)
+        return outputs
+
+    def predict_proba(self, x):
+        # predict class (probability) of x given naive bayes
+        if self.truncated:
+            x_truncated = self.svd.transform(x)
+            outputs = self.clf.predict_proba(x_truncated)
+        else:
+            outputs = self.clf.predict_proba(x)
         return outputs
 
 class StylometryNN(torch.nn.Module):

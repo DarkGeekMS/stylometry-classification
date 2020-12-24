@@ -3,6 +3,7 @@ from model import StylometryLC, StylometryNN
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.optim import Adam
 from sklearn.metrics import log_loss, accuracy_score
 
@@ -75,9 +76,9 @@ def nn_train(config):
             y_out = model(x_batch)
             y_out = torch.squeeze(y_out, dim=1).cpu().detach().numpy()
             # calculate loss and accuracy
-            y_out = y_out > 0.5
-            accuracies.append(accuracy_score(y_batch, y_out))
-            losses.append(log_loss(y_batch, y_out))
+            y_out_labels = y_out > 0.5
+            accuracies.append(accuracy_score(y_batch, y_out_labels))
+            losses.append(F.binary_cross_entropy(torch.from_numpy(y_out).float(), torch.from_numpy(y_batch).float()))
         # print results
         print (f'Validation accuracy: {(sum(accuracies)/len(accuracies))*100}%')
         print (f'Validation logloss: {sum(losses)/len(losses)}')
@@ -97,11 +98,12 @@ def lc_train(config):
     model.fit(xtrain, ytrain)
     # infer on validation data
     predictions = model.predict(xvalid)
+    predictions_proba = model.predict_proba(xvalid)
     # dump model pickle
     pickle.dump(model, open('models/nb_model.sav', 'wb'))
     # print results
     print (f'accuracy: {accuracy_score(yvalid, predictions)*100}%')
-    print (f'logloss: {log_loss(yvalid, predictions)}')
+    print (f'logloss: {log_loss(yvalid, predictions_proba)}')
 
 if __name__ == "__main__":
     # argument parsing
